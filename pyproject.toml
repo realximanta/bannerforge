@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bannerforge"
+version = "0.1.0"
+description = "Colorful terminal banner generator with automatic rendering."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "See LICENSE" }
+authors = [
+    { name = "Himanta Bhuyan", email = "realximanta@users.noreply.github.com" }
+]
+keywords = ["banner", "terminal", "cli", "ascii", "cfonts"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Topic :: Terminals",
+]
+dependencies = [
+    "cfonts",
+    "colorama",
+]
+
+[project.urls]
+Homepage = "https://github.com/realximanta/bannerforge"
+Repository = "https://github.com/realximanta/bannerforge"
+
+[tool.setuptools.packages.find]
+include = ["bannerforge*"]
