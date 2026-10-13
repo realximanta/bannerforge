@@ -8,6 +8,7 @@
 </div>
 
 **Colorful terminal banners. One line, one print, done.**
+
 ```
 ██╗  ██╗███████╗██╗     ██╗      ██████╗
 ██║  ██║██╔════╝██║     ██║     ██╔═══██╗
@@ -35,6 +36,18 @@ banner("HELLO", "World")
 That's it. No `print()`, no assignment, no ceremony. The banner renders on
 its own.
 
+### explicit rendering
+
+If you need deterministic timing — tests, CI, precise control — call
+`.render()` explicitly:
+
+```python
+banner("HELLO", "World").render()
+```
+
+This bypasses the `__del__` magic and prints immediately. Once rendered,
+the object won't render again.
+
 ### alignment
 
 ```python
@@ -45,18 +58,45 @@ banner("HELLO", "World").center()
 
 Only the subtitle moves. The main text is always centered.
 
+### custom colors
+
+By default a random color pair is picked each call. To pin them:
+
+```python
+banner("HELLO", "World").colors("cyan", "yellow").render()
+```
+
+Valid colors are the same ones `cfonts` accepts: `black`, `red`, `green`,
+`yellow`, `blue`, `magenta`, `cyan`, `white`, `gray`, and their `bold*`
+variants (e.g. `boldred`).
+
 ### no subtitle
 
 ```python
 banner("HELLO")
 ```
 
+### error handling
+
+If rendering fails, `bannerforge` raises an exception and prints a clear
+message to stderr. You can catch it if you want:
+
+```python
+try:
+    banner("").render()
+except ValueError as e:
+    print(f"caught: {e}")
+```
+
+The `__del__` fallback swallows errors silently (to avoid interpreter
+shutdown crashes), so for reliable error reporting always use `.render()`.
+
 ## how it works
 
-The banner object renders itself in `__del__`. When you don't bind the
-return value, Python drops the reference immediately and the banner
-prints. If you *do* bind it, the banner waits until the variable goes
-out of scope.
+The banner object normally renders itself in `__del__`. When you don't
+bind the return value, Python drops the reference immediately and the
+banner prints. If you *do* bind it, the banner waits until the variable
+goes out of scope.
 
 ```python
 # prints immediately
@@ -65,6 +105,9 @@ banner("HELLO", "World")
 # prints when x goes out of scope / program ends
 x = banner("HELLO", "World")
 ```
+
+For predictable behavior, prefer `.render()`. It makes the output timing
+explicit and surfaces any rendering errors.
 
 ## license
 
