@@ -48,6 +48,15 @@ banner("HELLO", "World").render()
 This bypasses the `__del__` magic and prints immediately. Once rendered,
 the object won't render again.
 
+### rendering to a string
+
+If you need the banner as a string instead of printed output:
+
+```python
+output = banner("HELLO", "World").to_string()
+print(output)
+```
+
 ### alignment
 
 ```python
