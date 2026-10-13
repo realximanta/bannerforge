@@ -4,32 +4,21 @@ import sys
 from cfonts import render
 from colorama import init
 
-init(autoreset=True)
+VALID_COLORS = {
+    "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white", "gray",
+    "boldblack", "boldred", "boldgreen", "boldyellow", "boldblue",
+    "boldmagenta", "boldcyan", "boldwhite",
+}
 
 COLOR_COMBOS = [
-    ("green", "yellow"),
-    ("magenta", "red"),
-    ("blue", "cyan"),
-    ("white", "gray"),
-    ("red", "magenta"),
-    ("yellow", "green"),
-    ("cyan", "green"),
-    ("blue", "magenta"),
-    ("yellow", "red"),
-    ("cyan", "yellow"),
-    ("green", "blue"),
-    ("magenta", "yellow"),
-    ("red", "blue"),
-    ("white", "cyan"),
-    ("gray", "magenta"),
-    ("green", "red"),
-    ("blue", "yellow"),
-    ("cyan", "red"),
-    ("white", "green"),
-    ("magenta", "cyan"),
-    ("red", "yellow"),
-    ("green", "cyan"),
-    ("blue", "green"),
+    ("green", "yellow"), ("magenta", "red"), ("blue", "cyan"),
+    ("white", "gray"), ("red", "magenta"), ("yellow", "green"),
+    ("cyan", "green"), ("blue", "magenta"), ("yellow", "red"),
+    ("cyan", "yellow"), ("green", "blue"), ("magenta", "yellow"),
+    ("red", "blue"), ("white", "cyan"), ("gray", "magenta"),
+    ("green", "red"), ("blue", "yellow"), ("cyan", "red"),
+    ("white", "green"), ("magenta", "cyan"), ("red", "yellow"),
+    ("green", "cyan"), ("blue", "green"),
 ]
 
 
@@ -65,67 +54,76 @@ class Banner:
     def colors(self, main_color, sub_color):
         """
         Override random colors.
-        Pass valid cfonts color names like 'green', 'cyan', 'boldred'.
+        Raises ValueError immediately if a color is not supported.
         """
+        for color in (main_color, sub_color):
+            if not isinstance(color, str):
+                raise TypeError("color names must be strings")
+            if color.lower() not in VALID_COLORS:
+                raise ValueError(
+                    f"invalid color '{color}'. "
+                    f"supported: {', '.join(sorted(VALID_COLORS))}"
+                )
         self._custom_colors = (main_color, sub_color)
         return self
 
+    def to_string(self):
+        """
+        Return the fully rendered banner as a string.
+        Does not print anything and does not set the rendered flag.
+        Useful for tests, logging, or custom output handling.
+        """
+        if self._custom_colors:
+            main_colors, sub_colors = self._custom_colors
+        else:
+            main_colors, sub_colors = random.sample(COLOR_COMBOS, 2)
+
+        main = render(
+            self.text,
+            colors=list(main_colors),
+            align="center",
+            font="block",
+            background="black",
+        )
+        if not main:
+            raise ValueError(f"cfonts failed to render text: {self.text!r}")
+
+        output = main
+
+        if self.subtitle:
+            sub = render(
+                self.subtitle,
+                colors=list(sub_colors),
+                align=self.align,
+                font="console",
+                background="black",
+            )
+            if not sub:
+                raise ValueError(f"cfonts failed to render subtitle: {self.subtitle!r}")
+            output += sub
+
+        return output
+
     def render(self):
         """
-        Explicitly render the banner.
-        Call this instead of relying on __del__ if you need deterministic
-        output, reproducible tests, or precise timing.
+        Render the banner to stdout.
+        Idempotent: calling it twice prints only once.
         """
         if self._rendered:
             return
 
-        try:
-            if self._custom_colors:
-                main_colors, sub_colors = self._custom_colors
-            else:
-                main_colors, sub_colors = random.sample(COLOR_COMBOS, 2)
+        init(autoreset=True)  # lazy init, not at import time
 
-            main = render(
-                self.text,
-                colors=list(main_colors),
-                align="center",
-                font="block",
-                background="black",
-            )
-            
-            if not main:
-                raise ValueError(
-                    f"cfonts failed to render text: {self.text!r}"
-                )
+        # build the whole string first so a failure never produces partial output
+        output = self.to_string()
 
-            print(main, end="")
-
-            if self.subtitle:
-                sub = render(
-                    self.subtitle,
-                    colors=list(sub_colors),
-                    align=self.align,
-                    font="console",
-                    background="black",
-                )
-                if not sub:
-                    raise ValueError(
-                        f"cfonts failed to render subtitle: {self.subtitle!r}"
-                    )
-                print(sub, end="")
-
-            self._rendered = True
-
-        except Exception as e:
-            # Print to stderr instead of silently swallowing.
-            # Use a plain message so it's readable in CI logs.
-            print(f"bannerforge: render failed: {e}", file=sys.stderr)
-            raise
+        print(output, end="")
+        self._rendered = True
 
     def __del__(self):
-        # Fallback magic: if the user didn't call .render() explicitly,
-        # try to print on destruction. Swallow errors here because
-        # __del__ during interpreter shutdown can crash.
+        # deprecated magic: kept for backwards compat but no longer
+        # the recommended path. errors are swallowed because raising
+        # in __del__ during shutdown crashes the interpreter.
         if not self._rendered:
             try:
                 self.render()
