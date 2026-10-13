@@ -1,11 +1,13 @@
 # bannerforge
 
-[![PyPI](https://img.shields.io/pypi/v/bannerforge.svg)](https://pypi.org/project/bannerforge/)
-[![Python](https://img.shields.io/pypi/pyversions/bannerforge.svg)](https://pypi.org/project/bannerforge/)
-[![License](https://img.shields.io/badge/license-Attribution-blue.svg)](./LICENSE)
+<div align="center">
 
-Colorful terminal banners. One line, one print, done.
+[![PyPI version](https://img.shields.io/pypi/v/bannerforge.png?style=flat-square&color=0A66C2&labelColor=0A66C2&logo=pypi&logoColor=white)](https://pypi.org/project/bannerforge/)
+[![License](https://img.shields.io/badge/license-Attribution-2ea44f.png?style=flat-square&color=2ea44f&labelColor=2ea44f&logo=opensourceinitiative&logoColor=white)](./LICENSE)
 
+</div>
+
+**Colorful terminal banners. One line, one print, done.**
 ```
 ██╗  ██╗███████╗██╗     ██╗      ██████╗
 ██║  ██║██╔════╝██║     ██║     ██╔═══██╗
