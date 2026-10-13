@@ -52,10 +52,6 @@ class Banner:
     centre = center
 
     def colors(self, main_color, sub_color):
-        """
-        Override random colors.
-        Raises ValueError immediately if a color is not supported.
-        """
         for color in (main_color, sub_color):
             if not isinstance(color, str):
                 raise TypeError("color names must be strings")
@@ -68,19 +64,21 @@ class Banner:
         return self
 
     def to_string(self):
-        """
-        Return the fully rendered banner as a string.
-        Does not print anything and does not set the rendered flag.
-        Useful for tests, logging, or custom output handling.
-        """
         if self._custom_colors:
             main_colors, sub_colors = self._custom_colors
         else:
             main_colors, sub_colors = random.sample(COLOR_COMBOS, 2)
 
+        # cfonts iterates over strings, so wrap in list to avoid treating
+        # "cyan" as ["c", "y", "a", "n"]
+        if isinstance(main_colors, str):
+            main_colors = [main_colors]
+        if isinstance(sub_colors, str):
+            sub_colors = [sub_colors]
+
         main = render(
             self.text,
-            colors=list(main_colors),
+            colors=main_colors,
             align="center",
             font="block",
             background="black",
@@ -93,7 +91,7 @@ class Banner:
         if self.subtitle:
             sub = render(
                 self.subtitle,
-                colors=list(sub_colors),
+                colors=sub_colors,
                 align=self.align,
                 font="console",
                 background="black",
@@ -105,26 +103,19 @@ class Banner:
         return output
 
     def render(self):
-        """
-        Render the banner to stdout.
-        Idempotent: calling it twice prints only once.
-        """
         if self._rendered:
             return
 
-        init(autoreset=True)  # lazy init, not at import time
+        init(autoreset=True)
 
-        # build the whole string first so a failure never produces partial output
         output = self.to_string()
 
         print(output, end="")
         self._rendered = True
 
     def __del__(self):
-        # deprecated magic: kept for backwards compat but no longer
-        # the recommended path. errors are swallowed because raising
-        # in __del__ during shutdown crashes the interpreter.
-        if not self._rendered:
+        # check attr in case __init__ failed before setting _rendered
+        if not getattr(self, '_rendered', True):
             try:
                 self.render()
             except Exception:
