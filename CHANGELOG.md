@@ -3,6 +3,16 @@
 all notable changes to bannerforge are documented here.
 format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.1] — 2026-10-13
+
+### fixed
+- `__version__` in `bannerforge/__init__.py` now matches `pyproject.toml`
+- LICENSE link in README now uses an absolute GitHub URL so it resolves
+  correctly on the PyPI project page
+
+### added
+- `Issues` URL in `[project.urls]`
+
 ## [0.2.0] — 2026-10-13
 
 ### added
@@ -16,7 +26,7 @@ format loosely follows [Keep a Changelog](https://keepachangelog.com/).
   so the banner never prints twice
 - errors now print to stderr and re-raise instead of being swallowed
 
-## [0.1.0 as v1.0.0 in releases] — 2026-10-12
+## [0.1.0] — 2026-10-13
 
 ### added
 - initial release
