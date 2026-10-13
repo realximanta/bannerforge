@@ -1,5 +1,9 @@
 # bannerforge
 
+[![PyPI](https://img.shields.io/pypi/v/bannerforge.svg)](https://pypi.org/project/bannerforge/)
+[![Python](https://img.shields.io/pypi/pyversions/bannerforge.svg)](https://pypi.org/project/bannerforge/)
+[![License](https://img.shields.io/badge/license-Attribution-blue.svg)](./LICENSE)
+
 Colorful terminal banners. One line, one print, done.
 
 ```
