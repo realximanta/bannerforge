@@ -111,7 +111,7 @@ explicit and surfaces any rendering errors.
 
 ## license
 
-Custom Attribution License — see [LICENSE](./LICENSE).
+Custom Attribution License — see [LICENSE](https://github.com/realximanta/bannerforge/blob/main/LICENSE).
 
 You can use, modify, and redistribute this code freely. If you do, you
 must credit **Himanta Bhuyan** and link back to this repository.
