@@ -28,6 +28,9 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/realximanta/bannerforge"
 Repository = "https://github.com/realximanta/bannerforge"
+Changelog = "https://github.com/realximanta/bannerforge/blob/main/CHANGELOG.md"
+Releases = "https://github.com/realximanta/bannerforge/releases"
+PyPI = "https://pypi.org/project/bannerforge/"
 
 [tool.setuptools.packages.find]
 include = ["bannerforge*"]
