@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bannerforge"
-version = "0.2.1"
+dynamic = ["version"]
 description = "Colorful terminal banner generator with automatic rendering."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -31,7 +31,9 @@ Repository = "https://github.com/realximanta/bannerforge"
 Issues = "https://github.com/realximanta/bannerforge/issues"
 Changelog = "https://github.com/realximanta/bannerforge/blob/main/CHANGELOG.md"
 Releases = "https://github.com/realximanta/bannerforge/releases"
-PyPI = "https://pypi.org/project/bannerforge/"
+
+[tool.setuptools.dynamic]
+version = { attr = "bannerforge.__version__" }
 
 [tool.setuptools.packages.find]
 include = ["bannerforge*"]
